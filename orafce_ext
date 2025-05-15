@@ -1,0 +1,81 @@
+Oracle RAW형식의 문자를 캐스팅 할수 있는 extension이 orafce_ext 로 추가되었습니다.
+
+종류는 다음과 같습니다.
+
+utl_raw.cast_to_raw(c IN VARCHAR2)
+utl_raw.cast_to_varchar2(r IN RAW)
+utl_raw.concat(r1 IN RAW, r2 IN RAW, r3 IN RAW, ...)
+utl_raw.convert(r IN RAW, to_charset IN VARCHAR2, from_charset IN VARCHAR2)
+utl_raw.length(r IN RAW)
+utl_raw.substr(r IN RAW, pos IN INTEGER, len IN INTEGER)
+
+지원되는 function은 적지만 oracle 표준을 그대로 자세한 내용은 다음의 링크를 참고 바랍니다.
+
+https://docs.oracle.com/cd/E11882_01/appdev.112/e40758/u_raw.htm#ARPLS072
+
+예제)
+
+# extension 생성
+psql>CREATE EXTENSION orafce;
+psql>CREATE EXTENSION orafce_ext;
+
+1. varchar2를 RAW로 변환
+  gpkrtpch=# SELECT utl_raw.cast_to_raw('abc'::oracle.varchar2);
+   cast_to_raw
+  -------------
+   \x616263
+  (1 row)
+
+2.RAW를 varchar2로 변환
+
+  gpkrtpch=# SELECT utl_raw.cast_to_varchar2('\x616263'::raw);
+   cast_to_varchar2
+  ------------------
+   abc
+  (1 row)
+
+  3.RAW데이터를 concat하여 합치기
+  gpkrtpch=# SELECT utl_raw.concat('a'::raw, 'b'::raw, 'c'::raw);
+    concat
+  ----------
+   \x616263
+  (1 row)
+
+4. 캐릭터셋 변환 (UTF-8->EUC_KR)
+
+  gpkrtpch=# select '한국'::raw;
+        raw
+  ----------------
+   \xed959ceab5ad
+  (1 row)
+
+  gpkrtpch=# SELECT utl_raw.convert('한국'::raw, 'EUC_KR', 'UTF-8');
+    convert
+  ------------
+   \xc7d1b1b9
+  (1 row)
+
+5. RAW 문자열 길이 함수 (한극 3byte, 2byte)
+
+  gpkrtpch=# select utl_raw.length('한국'::raw);
+   length
+  --------
+        6
+  (1 row)
+
+  gpkrtpch=# select utl_raw.length(utl_raw.convert('한국'::raw, 'EUC_KR', 'UTF-8'))
+  gpkrtpch-# ;
+   length
+  --------
+        4
+  (1 row)
+
+
+
+6. RAW문자열 substring 함수
+
+  gpkrtpch=# SELECT utl_raw.substr('abc'::raw, 1, 2);
+   substr
+  --------
+   \x6162
+  (1 row)
