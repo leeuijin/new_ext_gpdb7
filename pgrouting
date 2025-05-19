@@ -14,7 +14,7 @@ pgrouting은 PostGIS 확장기능으로 공간 함수 알고리즘 패키지 ext
 	여행하는 판매원
 	회전 제한 최단 경로(TRSP)
 
-PostGIS download
+#PostGIS download
 https://support.broadcom.com/group/ecx/downloads
 
 [gpadmin@mdw pkg]$ gppkg install postgis-3.3.2+pivotal.2.build.1-gp7-rhel8-x86_64.gppkg
@@ -53,7 +53,7 @@ psql> create extension pgrouting cascade;
   https://en.wikipedia.org/wiki/Travelling_salesman_problem
 
 # 예제
-  미국 29개 도시를 투어하고 싶은데 어떻게 가는것이 좋을지 해당 예제에서는 pgr_TSPeuclidean 알고리즘을 사용하여 최단 순회 경로를 구해 보도록 합니다.
+  미국 29개 도시를 투어하고 싶은데 어떤 여행 경로가 가장 효율적인지 해당 예제에서는 pgr_TSPeuclidean 알고리즘을 사용하여 최단 순회 경로를 구해 보도록 합니다.
 
 # 방문할 도시명, x , y 죄표를 통한 위치 정보 테이블 생성
 
@@ -99,9 +99,10 @@ psql> create extension pgrouting cascade;
     (29, 360, 1980, '루이빌'),
     (30, 1150, 1760, '뉴욕');
 
-    - chatGPT 를 이용하여 wi29 형식으로 30개국 죄표를 구했습니다. 실제 좌표와 다르더라도 감안해 주시길 바랍니다.
+    - ChatGPT 를 이용하여 wi29 형식으로 30개국 죄표를 구했습니다. 실제 좌표와 다르더라도 감안해 주시길 바랍니다.
 
 #좌표를 기반으로 그림으로 표현할수 있는 색인 작업
+
   gpkrtpch=# UPDATE wi29 SET geom = ST_makePoint(x,y); <-- 좌표를 기반으로 그림으로 표현할수 있는 색인 작업
   UPDATE 30
 
